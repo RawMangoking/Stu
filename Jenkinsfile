@@ -1,10 +1,5 @@
-
 pipeline {
-    agent any
-
-    options {
-        skipDefaultCheckout(true)
-    }
+    agent { label 'windows' }
 
     stages {
         stage('Checkout') {
