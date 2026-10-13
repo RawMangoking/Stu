@@ -1,5 +1,6 @@
+
 pipeline {
-    agent { label 'windows' }
+    agent { label 'built-in' }
 
     stages {
         stage('Checkout') {
@@ -10,7 +11,7 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                bat 'mvn clean test'
+                sh 'mvn clean test'
             }
             post {
                 always {
@@ -22,7 +23,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                bat 'mvn package'
+                sh 'mvn package'
             }
         }
     }
