@@ -58,4 +58,22 @@ class CourseTest {
 
         assertEquals(1, course.getCurrentEnrollment());
     }
+
+
+    @Test
+    void enrollmentShouldDecreaseWithoutBecomingNegative() {
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 30, true, null
+        );
+
+        course.incrementEnrollment();
+        course.decrementEnrollment();
+
+        assertEquals(0, course.getCurrentEnrollment());
+
+        course.decrementEnrollment();
+
+        assertEquals(0, course.getCurrentEnrollment());
+    }
 }

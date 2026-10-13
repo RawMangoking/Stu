@@ -55,4 +55,14 @@ public class Student {
         registeredCourses.add(courseCode);
         totalCredits += credits;
     }
+    public boolean removeRegistration(String courseCode, int credits) {
+        if (!registeredCourses.contains(courseCode)) {
+            return false;
+        }
+
+        registeredCourses.remove(courseCode);
+        totalCredits -= credits;
+
+        return true;
+    }
 }

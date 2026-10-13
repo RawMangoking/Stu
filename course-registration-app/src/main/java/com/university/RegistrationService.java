@@ -10,7 +10,7 @@ public class RegistrationService {
             return false;
         }
 
-        if (course.getCurrentEnrollment() > course.getCapacity()) {
+        if (course.getCurrentEnrollment() >= course.getCapacity()) {
             return false;
         }
 
@@ -38,4 +38,24 @@ public class RegistrationService {
 
         return true;
     }
+    
+    public boolean withdraw(Student student, Course course) {
+        if (!student.isRegistered(course.getCourseCode())) {
+            return false;
+        }
+
+        boolean removed = student.removeRegistration(
+                course.getCourseCode(),
+                course.getCredits()
+        );
+
+        if (!removed) {
+            return false;
+        }
+
+        course.decrementEnrollment();
+
+        return true;
+    }
+
 }

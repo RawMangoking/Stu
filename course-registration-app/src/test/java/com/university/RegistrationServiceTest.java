@@ -150,4 +150,112 @@ class RegistrationServiceTest {
         assertFalse(result);
         assertFalse(student.isRegistered("CS301"));
     }
+
+    @Test
+    void shouldRejectRegistrationWhenCourseIsFull() {
+        Student student = new Student("S102", "Ravi");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 1, true, null
+        );
+
+        course.incrementEnrollment();
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS301"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldAllowRegistrationWhenOneSeatRemains() {
+        Student student = new Student("S103", "Priya");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 2, true, null
+        );
+
+        course.incrementEnrollment();
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.register(student, course);
+
+        assertTrue(result);
+        assertTrue(student.isRegistered("CS301"));
+        assertEquals(4, student.getTotalCredits());
+        assertEquals(2, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldWithdrawStudentSuccessfully() {
+        Student student = new Student("S104", "Kavin");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 1, true, null
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        assertTrue(service.register(student, course));
+
+        boolean result = service.withdraw(student, course);
+
+        assertTrue(result);
+        assertFalse(student.isRegistered("CS301"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldRejectWithdrawalWhenStudentIsNotRegistered() {
+        Student student = new Student("S105", "Meena");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 2, true, null
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        boolean result = service.withdraw(student, course);
+
+        assertFalse(result);
+        assertFalse(student.isRegistered("CS301"));
+        assertEquals(0, student.getTotalCredits());
+        assertEquals(0, course.getCurrentEnrollment());
+    }
+
+    @Test
+    void shouldAllowAnotherStudentToRegisterAfterWithdrawal() {
+        Student firstStudent = new Student("S106", "Arun");
+        Student secondStudent = new Student("S107", "Divya");
+
+        Course course = new Course(
+                "CS301", "Data Structures",
+                4, 1, true, null
+        );
+
+        RegistrationService service = new RegistrationService();
+
+        assertTrue(service.register(firstStudent, course));
+        assertEquals(1, course.getCurrentEnrollment());
+
+        assertTrue(service.withdraw(firstStudent, course));
+        assertEquals(0, course.getCurrentEnrollment());
+
+        assertTrue(service.register(secondStudent, course));
+
+        assertFalse(firstStudent.isRegistered("CS301"));
+        assertTrue(secondStudent.isRegistered("CS301"));
+        assertEquals(4, secondStudent.getTotalCredits());
+        assertEquals(1, course.getCurrentEnrollment());
+    }
 }
