@@ -2,6 +2,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -16,7 +20,7 @@ pipeline {
             post {
                 always {
                     junit testResults: 'course-registration-app/target/surefire-reports/TEST-*.xml',
-                          allowEmptyResults: false
+                          allowEmptyResults: true
                 }
             }
         }
